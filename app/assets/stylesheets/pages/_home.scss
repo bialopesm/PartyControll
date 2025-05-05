@@ -1,1 +1,13 @@
-// Specific CSS for your home-page
+.container-fluid {
+  background:
+    url('3.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  height: 100vh;
+  margin: 0; /* Removes any default margins */
+  align-items: center;
+  position: relative;
+  text-shadow: 5px 5px 15px rgba(238, 233, 233, 0.6);
+  overflow: hidden;
+}
