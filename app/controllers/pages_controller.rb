@@ -1,7 +1,8 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :home ]
+  before_action :authenticate_user!, only: [:dashboard]
 
-  def home
-    @events = Event.all
+  def dashboard
+    @events = Event.all.order(created_at: :desc)
+    @new_event ||= Event.new
   end
 end

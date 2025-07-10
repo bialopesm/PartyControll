@@ -1,18 +1,107 @@
-
-<%= simple_form_for(@event) do |f| %>
-  <%= f.error_notification %>
-  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+<% event ||= Event.new %>
+<%= form_with(model: event, local: true, html: { class: 'needs-validation' }) do |f| %>
+  <% if event.errors.any? %>
+    <div class="alert alert-danger mb-3">
+      <h6 class="alert-heading">Please fix the following errors:</h6>
+      <ul class="mb-0">
+        <% event.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 
   <div class="form-inputs">
-    <%= f.input :name %>
-    <%= f.input :date %>
-    <%= f.input :place %>
-    <%= f.input :description %>
-    <%= f.input :status %>
-    <%= f.input :supplier %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <%= f.label :name, "Event Name", class: "form-label fw-bold" %>
+          <%= f.text_field :name, class: "form-control #{'is-invalid' if event.errors[:name].any?}", placeholder: "Enter event name" %>
+          <% if event.errors[:name].any? %>
+            <div class="invalid-feedback">
+              <%= event.errors[:name].join(', ') %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <%= f.label :event_type, "Event Type", class: "form-label fw-bold" %>
+          <%= f.select :event_type,
+              ['Wedding', 'Birthday', 'Anniversary', 'Corporate', 'Other'],
+              { prompt: 'Select event type' },
+              class: "form-control #{'is-invalid' if event.errors[:event_type].any?}"
+          %>
+          <% if event.errors[:event_type].any? %>
+            <div class="invalid-feedback">
+              <%= event.errors[:event_type].join(', ') %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <%= f.label :date, "Event Date", class: "form-label fw-bold" %>
+          <%= f.date_field :date, class: "form-control #{'is-invalid' if event.errors[:date].any?}" %>
+          <% if event.errors[:date].any? %>
+            <div class="invalid-feedback">
+              <%= event.errors[:date].join(', ') %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <%= f.label :status, "Event Status", class: "form-label fw-bold" %>
+          <%= f.select :status,
+              ['Planning', 'Confirmed', 'In Progress', 'Completed', 'Cancelled'],
+              { prompt: 'Select status' },
+              class: "form-control #{'is-invalid' if event.errors[:status].any?}"
+          %>
+          <% if event.errors[:status].any? %>
+            <div class="invalid-feedback">
+              <%= event.errors[:status].join(', ') %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= f.label :place, "Event Place", class: "form-label fw-bold" %>
+      <%= f.text_field :place, class: "form-control #{'is-invalid' if event.errors[:place].any?}", placeholder: "Enter event location" %>
+      <% if event.errors[:place].any? %>
+        <div class="invalid-feedback">
+          <%= event.errors[:place].join(', ') %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= f.label :description, "Description", class: "form-label fw-bold" %>
+      <%= f.text_area :description, class: "form-control #{'is-invalid' if event.errors[:description].any?}", rows: 3, placeholder: "Describe your event..." %>
+      <% if event.errors[:description].any? %>
+        <div class="invalid-feedback">
+          <%= event.errors[:description].join(', ') %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= f.label :supplier, "Suppliers/Vendors", class: "form-label fw-bold" %>
+      <%= f.text_area :supplier, class: "form-control #{'is-invalid' if event.errors[:supplier].any?}", rows: 2, placeholder: "List suppliers or vendors..." %>
+      <% if event.errors[:supplier].any? %>
+        <div class="invalid-feedback">
+          <%= event.errors[:supplier].join(', ') %>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit %>
+    <%= f.submit class: "btn btn-primary btn-lg w-100" %>
   </div>
 <% end %>

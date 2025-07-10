@@ -1,0 +1,169 @@
+<div class="home-container">
+  <!-- Header with User Info -->
+  <header class="home-header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <h4 class="text-white mb-0 me-3">
+            <i class="fas fa-user-circle me-2"></i>
+            Welcome, <%= current_user.email %>
+          </h4>
+        </div>
+        <div class="d-flex align-items-center">
+          <%= button_to "Logout", destroy_user_session_path,
+                        method: :delete,
+                        class: "btn btn-outline-light btn-sm me-2",
+                        data: { confirm: "Are you sure you want to logout?" } %>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="home-main">
+    <div class="container">
+      <div class="row">
+        <!-- Create Event Box -->
+        <div class="col-lg-6 mb-4">
+          <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white">
+              <h3 class="mb-0">
+                <i class="fas fa-plus-circle me-2"></i>
+                Create New Event
+              </h3>
+            </div>
+            <div class="card-body">
+              <%= render 'events/form', event: @new_event %>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Events Box -->
+        <div class="col-lg-6 mb-4">
+          <div class="card shadow-lg border-0">
+            <div class="card-header bg-success text-white">
+              <h3 class="mb-0">
+                <i class="fas fa-calendar-alt me-2"></i>
+                My Events
+              </h3>
+            </div>
+            <div class="card-body">
+              <div id="events-list">
+                <% if @events&.any? %>
+                  <% @events.each do |event| %>
+                    <div class="event-card mb-3 border rounded p-3 bg-light">
+                      <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                          <h5 class="mb-2 text-primary"><%= event.name %></h5>
+                          <div class="text-muted small">
+                            <i class="fas fa-tag me-1"></i>
+                            <strong>Type:</strong> <%= event.event_type %><br>
+                            <i class="fas fa-calendar me-1"></i>
+                            <strong>Date:</strong> <%= event.date&.strftime('%B %d, %Y') %><br>
+                            <% if event.place.present? %>
+                              <i class="fas fa-map-marker-alt me-1"></i>
+                              <strong>Place:</strong> <%= event.place %><br>
+                            <% end %>
+                            <% if event.status.present? %>
+                              <span class="badge bg-<%= status_color(event.status) %> me-1">
+                                <%= event.status %>
+                              </span>
+                            <% end %>
+                          </div>
+                          <% if event.description.present? %>
+                            <p class="mt-2 mb-2"><%= event.description %></p>
+                          <% end %>
+                          <% if event.supplier.present? %>
+                            <div class="mt-2">
+                              <small class="text-muted">
+                                <i class="fas fa-users me-1"></i>
+                                <strong>Suppliers:</strong> <%= truncate(event.supplier, length: 100) %>
+                              </small>
+                            </div>
+                          <% end %>
+                        </div>
+                        <div class="btn-group-vertical ms-2">
+                          <%= link_to edit_event_path(event), class: "btn btn-sm btn-outline-primary mb-1" do %>
+                            <i class="fas fa-edit"></i>
+                          <% end %>
+                          <%= button_to event_path(event),
+                              method: :delete,
+                              data: { confirm: "Are you sure you want to delete this event?" },
+                              class: "btn btn-sm btn-outline-danger" do %>
+                            <i class="fas fa-trash"></i>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <div class="text-center py-4">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No events created yet.</p>
+                    <p class="text-muted small">Create your first event using the form on the left!</p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<% content_for :head do %>
+  <script>
+    document.addEventListener('turbo:load', function() {
+      // Auto-hide flash messages after 5 seconds
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          if (alert && alert.parentNode) {
+            alert.classList.add('fade');
+            setTimeout(function() {
+              if (alert && alert.parentNode) {
+                alert.remove();
+              }
+            }, 300);
+          }
+        }, 5000);
+      });
+
+      // Add smooth scrolling for better UX
+      const eventCards = document.querySelectorAll('.event-card');
+      eventCards.forEach(function(card) {
+        card.addEventListener('click', function(e) {
+          if (!e.target.closest('.btn')) {
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+              this.style.transform = '';
+            }, 150);
+          }
+        });
+      });
+
+      // Form validation feedback
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function() {
+          const submitBtn = this.querySelector('input[type="submit"]');
+          if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            submitBtn.disabled = true;
+          }
+        });
+      }
+
+      // Refresh events list periodically (only if there are events)
+      const eventsList = document.getElementById('events-list');
+      if (eventsList && eventsList.children.length > 1) { // More than just the empty state
+        setInterval(function() {
+          if (eventsList) {
+            Turbo.visit(window.location.href, { action: "replace" });
+          }
+        }, 60000); // Refresh every minute
+      }
+    });
+  </script>
+<% end %>
