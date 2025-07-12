@@ -10,10 +10,13 @@
           </h4>
         </div>
         <div class="d-flex align-items-center">
-          <%= button_to "Logout", destroy_user_session_path,
+          <%= button_to destroy_user_session_path,
                         method: :delete,
                         class: "btn btn-outline-light btn-sm me-2",
-                        data: { confirm: "Are you sure you want to logout?" } %>
+                        data: { confirm: "Are you sure you want to logout?" },
+                        title: "Logout" do %>
+            <i class="fas fa-sign-out-alt"></i>
+          <% end %>
         </div>
       </div>
     </div>
@@ -26,14 +29,19 @@
         <!-- Create Event Box -->
         <div class="col-lg-6 mb-4">
           <div class="card shadow-lg border-0">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-primary text-white" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#createEventForm" aria-expanded="false" aria-controls="createEventForm">
               <h3 class="mb-0">
                 <i class="fas fa-plus-circle me-2"></i>
                 Create New Event
               </h3>
             </div>
-            <div class="card-body">
-              <%= render 'events/form', event: @new_event %>
+            <div class="card-body" id="createEventCardBody">
+              <!-- Collapsible Form -->
+              <div class="collapse" id="createEventForm">
+                <div class="border-top pt-3">
+                  <%= render 'events/form', event: @new_event %>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -54,12 +62,16 @@
                     <div class="event-card mb-3 border rounded p-3 bg-light">
                       <div class="d-flex justify-content-between align-items-start">
                         <div class="flex-grow-1">
-                          <h5 class="mb-2 text-primary"><%= event.name %></h5>
+                          <h5 class="mb-2 text-primary">
+                            <%= link_to event_path(event), class: "text-decoration-none" do %>
+                              <%= event.name %>
+                            <% end %>
+                          </h5>
                           <div class="text-muted small">
                             <i class="fas fa-tag me-1"></i>
                             <strong>Type:</strong> <%= event.event_type %><br>
                             <i class="fas fa-calendar me-1"></i>
-                            <strong>Date:</strong> <%= event.date&.strftime('%B %d, %Y') %><br>
+                            <strong>Date:</strong> <%= format_date_brazilian_with_month_name(event.date) %><br>
                             <% if event.place.present? %>
                               <i class="fas fa-map-marker-alt me-1"></i>
                               <strong>Place:</strong> <%= event.place %><br>
@@ -83,13 +95,13 @@
                           <% end %>
                         </div>
                         <div class="btn-group-vertical ms-2">
-                          <%= link_to edit_event_path(event), class: "btn btn-sm btn-outline-primary mb-1" do %>
+                          <%= link_to edit_event_path(event), class: "btn btn-sm btn-edit mb-1" do %>
                             <i class="fas fa-edit"></i>
                           <% end %>
                           <%= button_to event_path(event),
                               method: :delete,
-                              data: { confirm: "Are you sure you want to delete this event?" },
-                              class: "btn btn-sm btn-outline-danger" do %>
+                              data: { turbo_confirm: "Tem certeza que deseja deletar este evento?" },
+                              class: "btn btn-sm btn-delete" do %>
                             <i class="fas fa-trash"></i>
                           <% end %>
                         </div>
@@ -100,7 +112,7 @@
                   <div class="text-center py-4">
                     <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
                     <p class="text-muted">No events created yet.</p>
-                    <p class="text-muted small">Create your first event using the form on the left!</p>
+                    <p class="text-muted small">Create your first event using the form!</p>
                   </div>
                 <% end %>
               </div>
@@ -115,6 +127,75 @@
 <% content_for :head do %>
   <script>
     document.addEventListener('turbo:load', function() {
+      // Store scroll position
+      let scrollPosition = sessionStorage.getItem('dashboardScrollPosition') || 0;
+
+      // Restore scroll position on page load
+      if (scrollPosition > 0) {
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(scrollPosition));
+        }, 100);
+      }
+
+      // Save scroll position before any action that might cause navigation
+      document.addEventListener('click', function(e) {
+        const target = e.target.closest('button[data-turbo-confirm], form, input[type="submit"]');
+        if (target) {
+          sessionStorage.setItem('dashboardScrollPosition', window.scrollY);
+        }
+      });
+
+      // Save scroll position before Turbo navigation
+      document.addEventListener('turbo:before-visit', function() {
+        sessionStorage.setItem('dashboardScrollPosition', window.scrollY);
+      });
+
+      // Restore scroll position after Turbo navigation
+      document.addEventListener('turbo:load', function() {
+        const savedPosition = sessionStorage.getItem('dashboardScrollPosition');
+        if (savedPosition && savedPosition > 0) {
+          setTimeout(() => {
+            window.scrollTo(0, parseInt(savedPosition));
+          }, 100);
+        }
+      });
+
+      // Clear scroll position when leaving dashboard
+      document.addEventListener('turbo:before-visit', function(event) {
+        if (!event.detail.url.includes('/dashboard')) {
+          sessionStorage.removeItem('dashboardScrollPosition');
+        }
+      });
+
+      // Enhanced dropdown functionality
+      const createEventHeader = document.querySelector('[data-bs-target="#createEventForm"]');
+      const createEventForm = document.getElementById('createEventForm');
+      const createEventCardBody = document.getElementById('createEventCardBody');
+
+      if (createEventHeader && createEventForm) {
+        // Listen to Bootstrap collapse events
+        createEventForm.addEventListener('show.bs.collapse', function() {
+          // Expanding - show card-body
+          createEventCardBody.style.display = 'block';
+          createEventCardBody.style.padding = '2rem';
+        });
+
+        createEventForm.addEventListener('hide.bs.collapse', function() {
+          // Collapsing - hide card-body completely
+          createEventCardBody.style.display = 'none';
+        });
+
+        // Auto-expand form if there are validation errors
+        if (createEventForm.querySelector('.is-invalid')) {
+          createEventForm.classList.add('show');
+          createEventCardBody.style.display = 'block';
+          createEventCardBody.style.padding = '2rem';
+        } else {
+          // Hide card-body completely when form is collapsed
+          createEventCardBody.style.display = 'none';
+        }
+      }
+
       // Auto-hide flash messages after 5 seconds
       const alerts = document.querySelectorAll('.alert');
       alerts.forEach(function(alert) {

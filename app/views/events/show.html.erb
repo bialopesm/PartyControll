@@ -1,81 +1,91 @@
 <% content_for :title, @event.name %>
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="card shadow-lg border-0 position-relative">
-        <div class="card-header bg-info text-white">
-          <h3 class="mb-0">
+<div class="home-container">
+  <!-- Header -->
+  <header class="home-header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <%= link_to dashboard_path, class: "text-white me-3" do %>
+            <i class="fas fa-arrow-left fa-lg"></i>
+          <% end %>
+          <h4 class="text-white mb-0">
             <i class="fas fa-calendar-check me-2"></i>
             Event Details
-          </h3>
+          </h4>
         </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-6">
-              <h4 class="text-primary mb-3"><%= @event.name %></h4>
-              <div class="mb-3">
-                <strong><i class="fas fa-tag me-2"></i>Type:</strong>
-                <span class="badge bg-primary ms-2"><%= @event.event_type %></span>
-              </div>
-              <div class="mb-3">
-                <strong><i class="fas fa-calendar me-2"></i>Date:</strong>
-                <span class="ms-2"><%= @event.date&.strftime('%B %d, %Y') %></span>
-              </div>
-              <% if @event.place.present? %>
-                <div class="mb-3">
-                  <strong><i class="fas fa-map-marker-alt me-2"></i>Place:</strong>
-                  <span class="ms-2"><%= @event.place %></span>
-                </div>
-              <% end %>
-              <% if @event.status.present? %>
-                <div class="mb-3">
-                  <strong><i class="fas fa-info-circle me-2"></i>Status:</strong>
-                  <span class="badge bg-<%= status_color(@event.status) %> ms-2"><%= @event.status %></span>
-                </div>
-              <% end %>
-            </div>
-            <div class="col-md-6">
-              <% if @event.description.present? %>
-                <div class="mb-3">
-                  <strong><i class="fas fa-align-left me-2"></i>Description:</strong>
-                  <p class="mt-2"><%= @event.description %></p>
-                </div>
-              <% end %>
-              <% if @event.supplier.present? %>
-                <div class="mb-3">
-                  <strong><i class="fas fa-users me-2"></i>Suppliers/Vendors:</strong>
-                  <p class="mt-2"><%= @event.supplier %></p>
-                </div>
-              <% end %>
-            </div>
-          </div>
-
-          <!-- Botões dentro do card-body -->
-          <div class="mt-4 d-flex justify-content-end">
-            <div class="btn-group">
-              <%= button_to edit_event_path(@event),
-                            method: :get,
-                            class: "btn btn-sm btn-outline-primary me-2" do %>
-                <i class="fas fa-edit"></i>
-              <% end %>
-              <%= button_to event_path(@event),
-                            method: :delete,
-                            class: "btn btn-sm btn-outline-danger",
-                            data: { confirm: "Are you sure you want to delete this event?" } do %>
-                <i class="fas fa-trash"></i>
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-4 text-center">
-        <%= link_to dashboard_path, class: "btn btn-outline-secondary" do %>
-          <i class="fas fa-arrow-left me-1"></i>
-          Back to Dashboard
-        <% end %>
       </div>
     </div>
-  </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="home-main">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white">
+              <h3 class="mb-0">
+                <i class="fas fa-calendar-check me-2"></i>
+                <%= @event.name %>
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <strong><i class="fas fa-tag me-2"></i>Type:</strong>
+                    <span class="badge bg-primary ms-2"><%= @event.event_type %></span>
+                  </div>
+                  <div class="mb-3">
+                    <strong><i class="fas fa-calendar me-2"></i>Date:</strong>
+                    <span class="ms-2"><%= format_date_brazilian_with_month_name(@event.date) %></span>
+                  </div>
+                  <% if @event.place.present? %>
+                    <div class="mb-3">
+                      <strong><i class="fas fa-map-marker-alt me-2"></i>Place:</strong>
+                      <span class="ms-2"><%= @event.place %></span>
+                    </div>
+                  <% end %>
+                  <% if @event.status.present? %>
+                    <div class="mb-3">
+                      <strong><i class="fas fa-info-circle me-2"></i>Status:</strong>
+                      <span class="badge bg-<%= status_color(@event.status) %> ms-2"><%= @event.status %></span>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="col-md-6">
+                  <% if @event.description.present? %>
+                    <div class="mb-3">
+                      <strong><i class="fas fa-align-left me-2"></i>Description:</strong>
+                      <p class="mt-2"><%= @event.description %></p>
+                    </div>
+                  <% end %>
+                  <% if @event.supplier.present? %>
+                    <div class="mb-3">
+                      <strong><i class="fas fa-users me-2"></i>Suppliers/Vendors:</strong>
+                      <p class="mt-2"><%= @event.supplier %></p>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+
+              <!-- Botões dentro do card-body -->
+              <div class="mt-4 d-flex justify-content-end">
+                <%= link_to edit_event_path(@event), class: "btn btn-sm btn-edit me-2" do %>
+                  <i class="fas fa-edit"></i>
+                <% end %>
+                <%= button_to event_path(@event),
+                    method: :delete,
+                    class: "btn btn-sm btn-delete",
+                    data: { turbo_confirm: "Tem certeza que deseja deletar este evento?" } do %>
+                  <i class="fas fa-trash"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>

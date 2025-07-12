@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :events
   devise_for :users
 
   # Root route - redirects based on authentication
@@ -13,6 +12,9 @@ Rails.application.routes.draw do
 
   # Dashboard route for authenticated users
   get 'dashboard', to: 'pages#dashboard'
+
+  # Events routes
+  resources :events
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

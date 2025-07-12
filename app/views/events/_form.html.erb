@@ -45,7 +45,11 @@
       <div class="col-md-6">
         <div class="form-group mb-3">
           <%= f.label :date, "Event Date", class: "form-label fw-bold" %>
-          <%= f.date_field :date, class: "form-control #{'is-invalid' if event.errors[:date].any?}" %>
+          <%= f.text_field :date,
+              value: event.date ? format_date_brazilian(event.date) : nil,
+              class: "form-control #{'is-invalid' if event.errors[:date].any?}",
+              placeholder: "dd/mm/aaaa",
+              data: { mask: "00/00/0000" } %>
           <% if event.errors[:date].any? %>
             <div class="invalid-feedback">
               <%= event.errors[:date].join(', ') %>
@@ -105,3 +109,26 @@
     <%= f.submit class: "btn btn-primary btn-lg w-100" %>
   </div>
 <% end %>
+
+<script>
+document.addEventListener('turbo:load', function() {
+  // Aplicar máscara no campo de data
+  const dateField = document.querySelector('input[name="event[date]"]');
+  if (dateField) {
+    // Máscara simples para dd/mm/aaaa
+    dateField.addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+      if (value.length > 8) value = value.substring(0, 8);
+
+      // Aplica a máscara
+      if (value.length >= 4) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4) + '/' + value.substring(4);
+      } else if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+      }
+
+      e.target.value = value;
+    });
+  }
+});
+</script>

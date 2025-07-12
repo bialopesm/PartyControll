@@ -43,7 +43,7 @@ class EventsController < ApplicationController
   def update
     respond_to do |format|
       if @event.update(event_params)
-        format.html { redirect_to dashboard_path, notice: "Event was successfully updated." }
+        format.html { redirect_to @event, notice: "Event was successfully updated." }
         format.json { render :show, status: :ok, location: @event }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -68,8 +68,33 @@ class EventsController < ApplicationController
       @event = Event.find(params[:id])
     end
 
+    # Convert Brazilian date format (dd/mm/yyyy) to Rails format (yyyy-mm-dd)
+    def convert_brazilian_date(date_string)
+      return nil if date_string.blank?
+
+      # Check if it's already in Rails format (yyyy-mm-dd)
+      if date_string.match(/^\d{4}-\d{2}-\d{2}$/)
+        return date_string
+      end
+
+      # Convert from Brazilian format (dd/mm/yyyy) to Rails format (yyyy-mm-dd)
+      if date_string.match(/^\d{2}\/\d{2}\/\d{4}$/)
+        parts = date_string.split('/')
+        return "#{parts[2]}-#{parts[1]}-#{parts[0]}"
+      end
+
+      return nil
+    end
+
     # Only allow a list of trusted parameters through.
     def event_params
-      params.require(:event).permit(:name, :date, :place, :description, :status, :supplier, :event_type)
+      params_hash = params.require(:event).permit(:name, :date, :place, :description, :status, :supplier, :event_type)
+
+      # Convert date format if present
+      if params_hash[:date].present?
+        params_hash[:date] = convert_brazilian_date(params_hash[:date])
+      end
+
+      params_hash
     end
 end
