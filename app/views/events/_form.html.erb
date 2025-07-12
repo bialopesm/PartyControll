@@ -2,7 +2,7 @@
 <%= form_with(model: event, local: true, html: { class: 'needs-validation' }) do |f| %>
   <% if event.errors.any? %>
     <div class="alert alert-danger mb-3">
-      <h6 class="alert-heading">Please fix the following errors:</h6>
+      <h6 class="alert-heading">Por favor, corrija os seguintes erros:</h6>
       <ul class="mb-0">
         <% event.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -15,8 +15,8 @@
     <div class="row">
       <div class="col-md-6">
         <div class="form-group mb-3">
-          <%= f.label :name, "Event Name", class: "form-label fw-bold" %>
-          <%= f.text_field :name, class: "form-control #{'is-invalid' if event.errors[:name].any?}", placeholder: "Enter event name" %>
+          <%= f.label :name, "Nome do Evento", class: "form-label fw-bold" %>
+          <%= f.text_field :name, class: "form-control #{'is-invalid' if event.errors[:name].any?}", placeholder: "Digite o nome do evento" %>
           <% if event.errors[:name].any? %>
             <div class="invalid-feedback">
               <%= event.errors[:name].join(', ') %>
@@ -26,10 +26,10 @@
       </div>
       <div class="col-md-6">
         <div class="form-group mb-3">
-          <%= f.label :event_type, "Event Type", class: "form-label fw-bold" %>
+          <%= f.label :event_type, "Tipo de Evento", class: "form-label fw-bold" %>
           <%= f.select :event_type,
-              ['Wedding', 'Birthday', 'Anniversary', 'Corporate', 'Other'],
-              { prompt: 'Select event type' },
+              ['Casamento', 'Aniversário', 'Aniversário de Casamento', 'Corporativo', 'Outro'],
+              { prompt: 'Selecione o tipo de evento' },
               class: "form-control #{'is-invalid' if event.errors[:event_type].any?}"
           %>
           <% if event.errors[:event_type].any? %>
@@ -44,7 +44,7 @@
     <div class="row">
       <div class="col-md-6">
         <div class="form-group mb-3">
-          <%= f.label :date, "Event Date", class: "form-label fw-bold" %>
+          <%= f.label :date, "Data do Evento", class: "form-label fw-bold" %>
           <%= f.text_field :date,
               value: event.date ? format_date_brazilian(event.date) : nil,
               class: "form-control #{'is-invalid' if event.errors[:date].any?}",
@@ -59,10 +59,10 @@
       </div>
       <div class="col-md-6">
         <div class="form-group mb-3">
-          <%= f.label :status, "Event Status", class: "form-label fw-bold" %>
+          <%= f.label :status, "Status do Evento", class: "form-label fw-bold" %>
           <%= f.select :status,
-              ['Planning', 'Confirmed', 'In Progress', 'Completed', 'Cancelled'],
-              { prompt: 'Select status' },
+              ['Planejando', 'Confirmado', 'Em Andamento', 'Concluído', 'Cancelado'],
+              { prompt: 'Selecione o status' },
               class: "form-control #{'is-invalid' if event.errors[:status].any?}"
           %>
           <% if event.errors[:status].any? %>
@@ -75,8 +75,8 @@
     </div>
 
     <div class="form-group mb-3">
-      <%= f.label :place, "Event Place", class: "form-label fw-bold" %>
-      <%= f.text_field :place, class: "form-control #{'is-invalid' if event.errors[:place].any?}", placeholder: "Enter event location" %>
+      <%= f.label :place, "Local do Evento", class: "form-label fw-bold" %>
+      <%= f.text_field :place, class: "form-control #{'is-invalid' if event.errors[:place].any?}", placeholder: "Digite o local do evento" %>
       <% if event.errors[:place].any? %>
         <div class="invalid-feedback">
           <%= event.errors[:place].join(', ') %>
@@ -85,8 +85,8 @@
     </div>
 
     <div class="form-group mb-3">
-      <%= f.label :description, "Description", class: "form-label fw-bold" %>
-      <%= f.text_area :description, class: "form-control #{'is-invalid' if event.errors[:description].any?}", rows: 3, placeholder: "Describe your event..." %>
+      <%= f.label :description, "Descrição", class: "form-label fw-bold" %>
+      <%= f.text_area :description, class: "form-control #{'is-invalid' if event.errors[:description].any?}", rows: 3, placeholder: "Descreva seu evento..." %>
       <% if event.errors[:description].any? %>
         <div class="invalid-feedback">
           <%= event.errors[:description].join(', ') %>
@@ -95,8 +95,8 @@
     </div>
 
     <div class="form-group mb-3">
-      <%= f.label :supplier, "Suppliers/Vendors", class: "form-label fw-bold" %>
-      <%= f.text_area :supplier, class: "form-control #{'is-invalid' if event.errors[:supplier].any?}", rows: 2, placeholder: "List suppliers or vendors..." %>
+      <%= f.label :supplier, "Fornecedores/Vendedores", class: "form-label fw-bold" %>
+      <%= f.text_area :supplier, class: "form-control #{'is-invalid' if event.errors[:supplier].any?}", rows: 2, placeholder: "Liste fornecedores ou vendedores..." %>
       <% if event.errors[:supplier].any? %>
         <div class="invalid-feedback">
           <%= event.errors[:supplier].join(', ') %>
@@ -106,7 +106,7 @@
   </div>
 
   <div class="form-actions">
-    <%= f.submit class: "btn btn-primary btn-lg w-100" %>
+    <%= f.submit event.new_record? ? "Criar Evento" : "Atualizar Evento", class: "btn btn-primary btn-lg w-100" %>
   </div>
 <% end %>
 

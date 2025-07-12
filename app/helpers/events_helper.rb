@@ -1,15 +1,15 @@
 module EventsHelper
   def status_color(status)
     case status&.downcase
-    when 'planning'
+    when 'planejamento'
       'warning'
-    when 'confirmed'
+    when 'confirmado'
       'success'
-    when 'in progress'
+    when 'em andamento'
       'info'
-    when 'completed'
+    when 'concluído'
       'primary'
-    when 'cancelled'
+    when 'cancelado'
       'danger'
     else
       'secondary'

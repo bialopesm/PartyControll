@@ -6,15 +6,15 @@
         <div class="d-flex align-items-center">
           <h4 class="text-white mb-0 me-3">
             <i class="fas fa-user-circle me-2"></i>
-            Welcome, <%= current_user.email %>
+            Bem-vindo, <%= current_user.email %>
           </h4>
         </div>
         <div class="d-flex align-items-center">
           <%= button_to destroy_user_session_path,
                         method: :delete,
                         class: "btn btn-outline-light btn-sm me-2",
-                        data: { confirm: "Are you sure you want to logout?" },
-                        title: "Logout" do %>
+                        data: { confirm: "Tem certeza que deseja sair?" },
+                        title: "Sair" do %>
             <i class="fas fa-sign-out-alt"></i>
           <% end %>
         </div>
@@ -32,7 +32,7 @@
             <div class="card-header bg-primary text-white" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#createEventForm" aria-expanded="false" aria-controls="createEventForm">
               <h3 class="mb-0">
                 <i class="fas fa-plus-circle me-2"></i>
-                Create New Event
+                Criar Novo Evento
               </h3>
             </div>
             <div class="card-body" id="createEventCardBody">
@@ -52,7 +52,7 @@
             <div class="card-header bg-success text-white">
               <h3 class="mb-0">
                 <i class="fas fa-calendar-alt me-2"></i>
-                My Events
+                Meus Eventos
               </h3>
             </div>
             <div class="card-body">
@@ -69,12 +69,12 @@
                           </h5>
                           <div class="text-muted small">
                             <i class="fas fa-tag me-1"></i>
-                            <strong>Type:</strong> <%= event.event_type %><br>
+                            <strong>Tipo:</strong> <%= event.event_type %><br>
                             <i class="fas fa-calendar me-1"></i>
-                            <strong>Date:</strong> <%= format_date_brazilian_with_month_name(event.date) %><br>
+                            <strong>Data:</strong> <%= format_date_brazilian_with_month_name(event.date) %><br>
                             <% if event.place.present? %>
                               <i class="fas fa-map-marker-alt me-1"></i>
-                              <strong>Place:</strong> <%= event.place %><br>
+                              <strong>Local:</strong> <%= event.place %><br>
                             <% end %>
                             <% if event.status.present? %>
                               <span class="badge bg-<%= status_color(event.status) %> me-1">
@@ -89,7 +89,7 @@
                             <div class="mt-2">
                               <small class="text-muted">
                                 <i class="fas fa-users me-1"></i>
-                                <strong>Suppliers:</strong> <%= truncate(event.supplier, length: 100) %>
+                                <strong>Fornecedores:</strong> <%= truncate(event.supplier, length: 100) %>
                               </small>
                             </div>
                           <% end %>
@@ -111,8 +111,8 @@
                 <% else %>
                   <div class="text-center py-4">
                     <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No events created yet.</p>
-                    <p class="text-muted small">Create your first event using the form!</p>
+                    <p class="text-muted">Nenhum evento criado ainda.</p>
+                    <p class="text-muted small">Crie seu primeiro evento usando o formulário!</p>
                   </div>
                 <% end %>
               </div>
@@ -230,7 +230,7 @@
         form.addEventListener('submit', function() {
           const submitBtn = this.querySelector('input[type="submit"]');
           if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando...';
             submitBtn.disabled = true;
           }
         });
