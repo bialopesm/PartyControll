@@ -3,6 +3,6 @@ class PagesController < ApplicationController
 
   def dashboard
     @events = Event.all.order(created_at: :asc)
-    @new_event ||= Event.new
+    @dashboard ||= Event.new
   end
 end
