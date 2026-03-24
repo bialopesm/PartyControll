@@ -1,13 +1,16 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  # Root route - redirects based on authentication
-  authenticated :user do
-    root to: "pages#dashboard", as: :authenticated_root
-  end
+  # Root route - redirects based on authentication.
+  # devise_scope is required so Devise::SessionsController has a mapping when "/" is login.
+  devise_scope :user do
+    authenticated :user do
+      root to: "pages#dashboard", as: :authenticated_root
+    end
 
-  unauthenticated :user do
-    root to: "devise/sessions#new", as: :unauthenticated_root
+    unauthenticated :user do
+      root to: "devise/sessions#new", as: :unauthenticated_root
+    end
   end
 
   # Dashboard route for authenticated users
