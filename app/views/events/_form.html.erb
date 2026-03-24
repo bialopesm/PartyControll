@@ -61,7 +61,7 @@
         <div class="form-group mb-3">
           <%= f.label :status, "Status do Evento", class: "form-label fw-bold" %>
           <%= f.select :status,
-              ['Planejando', 'Confirmado', 'Em Andamento', 'Concluído', 'Cancelado'],
+              ['Planejamento', 'Confirmado', 'Em Andamento', 'Concluído', 'Cancelado'],
               { prompt: 'Selecione o status' },
               class: "form-control #{'is-invalid' if event.errors[:status].any?}"
           %>

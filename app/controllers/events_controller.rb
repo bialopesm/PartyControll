@@ -26,12 +26,16 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.save
-        format.html { redirect_to dashboard_path, notice: "Evento criado com sucesso." }
+        format.html do
+          redirect_to dashboard_path(calendar_month: @event.date.beginning_of_month.strftime("%Y-%m")),
+                        notice: "Evento criado com sucesso."
+        end
         format.json { render :show, status: :created, location: @event }
       else
         format.html {
           @events = Event.all.order(created_at: :desc)
           @new_event = @event
+          assign_dashboard_calendar
           render 'pages/dashboard', status: :unprocessable_entity
         }
         format.json { render json: @event.errors, status: :unprocessable_entity }

@@ -1,0 +1,78 @@
+<div class="card shadow-lg border-0 event-calendar-card">
+  <div class="card-header event-calendar-card__header text-white">
+    <h3 class="mb-3 text-center">
+      <i class="fas fa-calendar-week me-2"></i>
+      Calendário de eventos
+    </h3>
+    <div class="d-flex flex-wrap align-items-center justify-content-center gap-2 gap-md-3">
+      <%= link_to dashboard_path(calendar_month: (@calendar_month - 1.month).strftime("%Y-%m")),
+                  class: "btn btn-sm btn-outline-light flex-shrink-0",
+                  title: "Mês anterior" do %>
+        <i class="fas fa-chevron-left"></i>
+      <% end %>
+
+      <%= form_with url: dashboard_path, method: :get, class: "d-flex flex-wrap align-items-end justify-content-center gap-2 gap-md-3 event-calendar-picker" do %>
+        <div class="d-flex flex-column">
+          <label for="calendar_jump_month" class="form-label text-white-50 small mb-1">Mês</label>
+          <%= select_tag :calendar_month_num,
+                         options_for_select(calendar_month_select_options, @calendar_month.month),
+                         id: "calendar_jump_month",
+                         class: "form-select form-select-sm event-calendar-picker__select",
+                         onchange: "this.form.requestSubmit()" %>
+        </div>
+        <div class="d-flex flex-column">
+          <label for="calendar_jump_year" class="form-label text-white-50 small mb-1">Ano</label>
+          <%= select_tag :calendar_year,
+                         options_for_select(calendar_year_select_options, @calendar_month.year),
+                         id: "calendar_jump_year",
+                         class: "form-select form-select-sm event-calendar-picker__select",
+                         onchange: "this.form.requestSubmit()" %>
+        </div>
+      <% end %>
+
+      <%= link_to dashboard_path(calendar_month: (@calendar_month + 1.month).strftime("%Y-%m")),
+                  class: "btn btn-sm btn-outline-light flex-shrink-0",
+                  title: "Próximo mês" do %>
+        <i class="fas fa-chevron-right"></i>
+      <% end %>
+    </div>
+    <p class="text-center text-white-50 small mb-0 mt-3">
+      <%= calendar_month_title_pt(@calendar_month) %>
+    </p>
+  </div>
+  <div class="card-body event-calendar-card__body">
+    <div class="event-calendar__weekdays">
+      <% %w[Seg Ter Qua Qui Sex Sáb Dom].each do |label| %>
+        <div class="event-calendar__weekday"><%= label %></div>
+      <% end %>
+    </div>
+    <div class="event-calendar__grid">
+      <% calendar_weeks(@calendar_month).each do |week| %>
+        <% week.each do |day| %>
+          <% if day.nil? %>
+            <div class="event-calendar__day event-calendar__day--placeholder" aria-hidden="true"></div>
+          <% else %>
+            <% in_month = day.month == @calendar_month.month %>
+            <% day_events = @events_by_date[day] || [] %>
+            <div class="event-calendar__day <%= "event-calendar__day--muted" unless in_month %> <%= "event-calendar__day--today" if day == Date.current %> <%= "event-calendar__day--has-events" if day_events.any? %>">
+              <span class="event-calendar__day-num"><%= day.day %></span>
+              <% if day_events.any? %>
+                <ul class="event-calendar__day-events list-unstyled mb-0">
+                  <% day_events.each do |ev| %>
+                    <li>
+                      <%= link_to truncate(ev.name, length: 22), event_path(ev), class: "event-calendar__event-link", title: ev.name %>
+                    </li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+    <p class="text-muted small mb-0 mt-3 text-center">
+      <i class="fas fa-info-circle me-1"></i>
+      Os dias com evento aparecem destacados; clique no nome para abrir o evento.
+    </p>
+  </div>
+</div>

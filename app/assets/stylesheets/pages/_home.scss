@@ -298,6 +298,137 @@
       transform: scale(1.05);
     }
   }
+
+  .event-calendar-card {
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+
+    &__header {
+      border-radius: 15px 15px 0 0 !important;
+      border: none;
+      padding: 1.25rem 1.5rem;
+      background: linear-gradient(45deg, #6f42c1, #ec4aa9) !important;
+
+      h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .event-calendar-picker {
+        &__select {
+          min-width: 9.5rem;
+          max-width: 100%;
+          color: #212529;
+          background-color: #fff;
+          border: none;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+
+          &:focus {
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.35);
+          }
+        }
+
+        .form-label {
+          font-size: 0.7rem;
+          letter-spacing: 0.03em;
+        }
+      }
+    }
+
+    &__body {
+      padding: 1.5rem;
+    }
+  }
+
+  .event-calendar {
+    &__weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    &__weekday {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    &__grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    &__day {
+      min-height: 92px;
+      border: 1px solid #e9ecef;
+      border-radius: 10px;
+      padding: 0.35rem 0.4rem;
+      background: #fff;
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+
+      &--muted {
+        opacity: 0.45;
+        background: #f8f9fa;
+      }
+
+      &--today {
+        box-shadow: 0 0 0 2px #ec4aa9;
+      }
+
+      &--has-events {
+        background: rgba(236, 74, 169, 0.12);
+        border-color: rgba(236, 74, 169, 0.35);
+      }
+
+      &--placeholder {
+        min-height: 92px;
+        border: none;
+        background: transparent;
+        pointer-events: none;
+      }
+    }
+
+    &__day-num {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #495057;
+      margin-bottom: 0.25rem;
+    }
+
+    &__day-events {
+      font-size: 0.7rem;
+      line-height: 1.25;
+
+      li + li {
+        margin-top: 0.15rem;
+      }
+    }
+
+    &__event-link {
+      color: #ec4aa9;
+      font-weight: 600;
+      text-decoration: none;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:hover {
+        color: #ff3c00;
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 // Responsive adjustments
@@ -330,6 +461,16 @@
           padding: 0.25rem 0.5rem;
           font-size: 0.8rem;
         }
+      }
+    }
+
+    .event-calendar {
+      &__day {
+        min-height: 72px;
+      }
+
+      &__day--placeholder {
+        min-height: 72px;
       }
     }
   }

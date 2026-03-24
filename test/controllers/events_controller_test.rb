@@ -21,7 +21,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       post events_url, params: { event: { date: @event.date, description: @event.description, name: "Novo evento", place: @event.place, status: @event.status, supplier: @event.supplier, event_type: @event.event_type } }
     end
 
-    assert_redirected_to dashboard_path
+    assert_redirected_to dashboard_path(calendar_month: Event.last.date.beginning_of_month.strftime("%Y-%m"))
   end
 
   test "should show event" do
